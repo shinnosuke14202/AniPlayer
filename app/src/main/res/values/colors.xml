@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#222222</color>
+    <color name="white">#FFFFFF</color>
+    <color name="white_off">#FAF9F6</color>
+    <color name="light_background">#FFF8E1</color>
+    <color name="light_yellow">#FEE5C1</color>
+    <color name="light_orange">#f7b267</color>
+    <color name="medium_orange">#f79d65</color>
+
+    <!-- Mango Theme Colors -->
+    <color name="colorPrimary">#FBC984</color> <!-- Warm Mango -->
+    <color name="colorPrimaryVariant">#FCD49B</color> <!-- Light Mango -->
+    <color name="colorAccent">#FFE0B5</color> <!-- Soft Apricot -->
+
+    <!-- Light Backgrounds and Surfaces with White Hints -->
+    <color name="colorBackground">#FFFBF5</color> <!-- Warm White -->
+    <color name="colorSurface">#FFF7ED</color> <!-- Soft Cream -->
+    <color name="colorCard">#FFF0E1</color> <!-- Light Peach Tint -->
+
+    <!-- UI Elements -->
+    <color name="colorButton">#FFD3CA</color> <!-- Blush Pink -->
+    <color name="colorHighlight">#FFB3AB</color> <!-- Light Coral -->
+    <color name="colorInputField">#FFE5B4</color> <!-- Fresh Peach -->
+
+    <!-- Functional Colors -->
+    <color name="colorSuccess">#E9FCD4</color> <!-- Soft Lime -->
+    <color name="colorError">#FFB3AB</color> <!-- Light Coral -->
+    <color name="colorInfo">#C7EFFF</color> <!-- Light Sky Blue -->
+    <color name="colorNeutral">#F1FFF0</color> <!-- Mint Cream -->
+
+    <!-- Text Colors -->
+    <color name="colorOnPrimary">#000000</color>
+    <color name="colorOnBackground">#333333</color>
+    <color name="colorOnSurface">#444444</color>
+
+    <color name="colorSubText">#818080</color>
+</resources>

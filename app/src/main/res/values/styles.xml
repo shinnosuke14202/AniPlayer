@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Different Corner -->
+    <style name="rounded_corner">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/corner_rounded_size</item>
+    </style>
+
+    <style name="circle_corner">
+        <item name="cornerSize">50%</item>
+    </style>
+</resources>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Mango Theme Colors (Dark) -->
+    <color name="colorPrimary">#FFE6A7</color> <!-- Keep Mango Yellow bright for contrast -->
+    <color name="colorPrimaryVariant">#FEE5C1</color> <!-- Darker Mango -->
+    <color name="colorAccent">#FFB085</color> <!-- Deeper Apricot -->
+
+    <!-- Backgrounds and Surfaces -->
+    <color name="colorBackground">#121212</color> <!-- Dark Background -->
+    <color name="colorSurface">#1E1E1E</color> <!-- Slightly lighter for surfaces -->
+    <color name="colorCard">#2C2C2C</color> <!-- Surface variant -->
+
+    <!-- UI Elements -->
+    <color name="colorButton">#FFAB99</color> <!-- Warm Pink -->
+    <color name="colorHighlight">#FF8A80</color> <!-- Soft Coral -->
+    <color name="colorInputField">#3A3A3A</color> <!-- Darker Peach-like field -->
+
+    <!-- Functional Colors -->
+    <color name="colorSuccess">#B2DF8A</color> <!-- Muted Lime -->
+    <color name="colorError">#FF8A80</color> <!-- Light Coral -->
+    <color name="colorInfo">#80DEEA</color> <!-- Soft Cyan -->
+    <color name="colorNeutral">#D7FFD9</color> <!-- Light Mint -->
+
+    <!-- Text Colors -->
+    <color name="colorOnPrimary">#DDDDDD</color>
+    <color name="colorOnBackground">#EEEEEE</color>
+    <color name="colorOnSurface">#DDDDDD</color>
+</resources>
