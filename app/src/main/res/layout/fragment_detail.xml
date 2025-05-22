@@ -34,7 +34,8 @@
 
     <include
         android:id="@+id/icProgressBar"
-        layout="@layout/item_progress_bar" />
+        layout="@layout/item_progress_bar"
+        android:visibility="gone" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -156,6 +157,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginBottom="@dimen/margin_normal"
                     android:clickable="true"
                     android:focusable="true"
                     android:text="@string/show_more"
@@ -197,8 +199,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/margin_normal"
-        android:contentDescription="@string/start"
         android:backgroundTint="@color/light_orange"
+        android:contentDescription="@string/start"
         android:src="@drawable/baseline_play_arrow_24"
         app:shapeAppearance="@style/circle_corner" />
 

@@ -9,4 +9,5 @@ data class MangaPage(
     @JvmField val id: Long,
     @JvmField val url: String,
     @JvmField val source: Source,
+    @JvmField val chapterTitle: String,
 ) : Parcelable

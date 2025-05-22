@@ -28,6 +28,7 @@ import com.example.aniplayer.utils.SITE_INDEX
 import com.example.aniplayer.utils.fragment.goBackFragment
 import com.example.aniplayer.utils.view.GridSpacingItemDecoration
 import com.example.aniplayer.utils.view.ViewUtils
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -106,7 +107,7 @@ abstract class BaseGridFragment<T : Any, F> : Fragment() {
     }
 
     private fun collectPagingData() {
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             viewModel.pagingDataFlow.collectLatest {
                 adapter.submitData(it)
             }

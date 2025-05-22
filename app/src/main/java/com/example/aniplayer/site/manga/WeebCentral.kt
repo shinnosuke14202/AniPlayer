@@ -304,6 +304,7 @@ internal class WeebCentral : MangaSite(), Parcelable {
                 id = generateUid(pageUrl),
                 url = pageUrl,
                 source = source,
+                chapterTitle = chapter.title ?: "",
             )
         }
     }

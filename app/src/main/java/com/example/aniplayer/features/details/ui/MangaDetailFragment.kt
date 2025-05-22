@@ -47,7 +47,7 @@ class MangaDetailFragment : BaseDetailFragment<MangaChapter>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(manga)
-        loadMangaDetail()
+        if (manga.chapters.isNullOrEmpty()) loadMangaDetail()
     }
 
     private fun loadMangaDetail() {
@@ -66,7 +66,8 @@ class MangaDetailFragment : BaseDetailFragment<MangaChapter>() {
 
                 is UiState.Success<Manga> -> {
                     binding.icProgressBar.flProgressCircular.visibility = View.GONE
-                    initView(it.data)
+                    manga = it.data
+                    initView(manga)
                     binding.llDetail.visibility = View.VISIBLE
                     binding.tvToggleDescription.visibility = View.VISIBLE
                 }
@@ -77,7 +78,9 @@ class MangaDetailFragment : BaseDetailFragment<MangaChapter>() {
     private fun createEntryAdapter(chapters: List<MangaChapter>?) {
         val list = chapters ?: listOf()
         entryAdapter = MangaEntryDetailAdapter(list) {
-            replaceFragment(R.id.mainFl, ReaderFragment.newInstance(site, list, list.indexOf(it)), true)
+            addFragment(
+                R.id.mainFl, ReaderFragment.newInstance(site, manga, list.indexOf(it)), true
+            )
         }
         binding.rvChapters.adapter = entryAdapter
     }

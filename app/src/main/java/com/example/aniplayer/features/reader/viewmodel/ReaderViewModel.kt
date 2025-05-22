@@ -14,10 +14,11 @@ import kotlinx.coroutines.flow.Flow
 
 class ReaderViewModel(mangaSite: MangaSite, chapters: List<MangaChapter>, position: Int) :
     ViewModel() {
-    val pagingDataFlow: Flow<PagingData<MangaPage>> = Pager<Int, MangaPage>(
+
+    val pagingDataFlow: Flow<PagingData<MangaPage>> = Pager(
         config = PagingConfig(
-            pageSize = 20
-        ),
-        pagingSourceFactory = { MangaPagePagingSource(mangaSite, chapters[position]) }
-    ).flow.cachedIn(viewModelScope)
+            pageSize = 30, prefetchDistance = 1
+        ), pagingSourceFactory = {
+            MangaPagePagingSource(mangaSite, chapters, position)
+        }).flow.cachedIn(viewModelScope)
 }

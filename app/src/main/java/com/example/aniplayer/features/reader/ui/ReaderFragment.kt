@@ -1,5 +1,6 @@
 package com.example.aniplayer.features.reader.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -11,22 +12,26 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.aniplayer.databinding.FragmentReaderBinding
 import com.example.aniplayer.features.list.paging.PagingLoadStateAdapter
 import com.example.aniplayer.features.reader.adapter.ReaderAdapter
 import com.example.aniplayer.features.reader.viewmodel.ReaderViewModel
 import com.example.aniplayer.features.reader.viewmodel.ReaderViewModelFactory
+import com.example.aniplayer.model.manga.Manga
 import com.example.aniplayer.model.manga.MangaChapter
 import com.example.aniplayer.site.manga.MangaSite
 import com.example.aniplayer.utils.CHAPTER_NUMBER
+import com.example.aniplayer.utils.CLASS_ITEM
 import com.example.aniplayer.utils.CLASS_SITE
 import com.example.aniplayer.utils.DEFAULT_ERROR_MESSAGE
-import com.example.aniplayer.utils.LIST_CHAPTERS
 import com.example.aniplayer.utils.fragment.goBackFragment
 import com.example.aniplayer.utils.parcelable.parcelable
-import com.example.aniplayer.utils.parcelable.parcelableArrayList
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 class ReaderFragment : Fragment() {
 
@@ -34,17 +39,22 @@ class ReaderFragment : Fragment() {
 
     private lateinit var chapters: List<MangaChapter>
     private lateinit var site: MangaSite
+    private lateinit var manga: Manga
     private var position: Int = 0
 
     private lateinit var adapter: ReaderAdapter
     private lateinit var footerAdapter: LoadStateAdapter<*>
+    private lateinit var headerAdapter: LoadStateAdapter<*>
 
     private lateinit var viewModel: ReaderViewModel
 
+    private var showAppBar = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        chapters = requireArguments().parcelableArrayList<MangaChapter>(LIST_CHAPTERS).toList()
-        site = requireArguments().parcelable(CLASS_SITE)
+        site = requireArguments().parcelable<MangaSite>(CLASS_SITE)
+        manga = requireArguments().parcelable<Manga>(CLASS_ITEM)
+        chapters = manga.chapters ?: emptyList()
         position = requireArguments().getInt(CHAPTER_NUMBER)
     }
 
@@ -55,6 +65,7 @@ class ReaderFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -62,21 +73,76 @@ class ReaderFragment : Fragment() {
             this, ReaderViewModelFactory(site, chapters, position)
         )[ReaderViewModel::class.java]
 
+        setupAppBar()
         setupRecyclerView()
         setupPagingFlow()
+        setupScrollListener()
+    }
 
+    private fun setupScrollListener() {
+
+        binding.rvImages.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                // Update chapter when scroll stops for better performance
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    updateCurrentChapterInfo()
+                }
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                // Optional: Update in real-time while scrolling
+                if (abs(dy) > 50) { // Only update on significant scroll
+                    updateCurrentChapterInfo()
+                }
+            }
+        })
+    }
+
+    private fun updateCurrentChapterInfo() {
+        val layoutManager = binding.rvImages.layoutManager as LinearLayoutManager
+        val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
+
+        val snapshot = adapter.snapshot()
+        if (firstVisiblePosition >= 0 && firstVisiblePosition < snapshot.size) {
+            snapshot[firstVisiblePosition]?.let { page ->
+                if (binding.toolbar.subtitle.toString() != page.chapterTitle) {
+                    binding.toolbar.subtitle = page.chapterTitle
+                }
+            }
+        }
+    }
+
+    private fun setupAppBar() {
+        binding.toolbar.title = manga.title
+        binding.toolbar.subtitle = chapters[position].title
         binding.toolbar.setNavigationOnClickListener {
             goBackFragment()
         }
     }
 
     private fun setupRecyclerView() {
-        adapter = ReaderAdapter()
+        adapter = ReaderAdapter {
+            toggleAppBar()
+        }
         footerAdapter = PagingLoadStateAdapter()
-        val concatAdapter = adapter.withLoadStateFooter(
-            footer = footerAdapter
+        headerAdapter = PagingLoadStateAdapter()
+        val concatAdapter = adapter.withLoadStateHeaderAndFooter(
+            footer = footerAdapter, header = headerAdapter
         )
         binding.rvImages.adapter = concatAdapter
+    }
+
+    private fun toggleAppBar() {
+        if (showAppBar) {
+            binding.appBarLayout.visibility = View.GONE
+        } else {
+            binding.appBarLayout.visibility = View.VISIBLE
+        }
+        showAppBar = !showAppBar
     }
 
     private fun setupPagingFlow() {
@@ -85,7 +151,7 @@ class ReaderFragment : Fragment() {
     }
 
     private fun collectPagingData() {
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             viewModel.pagingDataFlow.collectLatest {
                 adapter.submitData(it)
             }
@@ -97,11 +163,13 @@ class ReaderFragment : Fragment() {
             adapter.loadStateFlow.collectLatest { loadStates ->
                 when (val state = loadStates.refresh) {
                     is LoadState.Loading -> {
-
+                        binding.icProgressBar.flProgressCircular.visibility = View.VISIBLE
+                        binding.rvImages.visibility = View.GONE
                     }
 
                     is LoadState.NotLoading -> {
-
+                        binding.icProgressBar.flProgressCircular.visibility = View.GONE
+                        binding.rvImages.visibility = View.VISIBLE
                     }
 
                     is LoadState.Error -> {
@@ -110,6 +178,9 @@ class ReaderFragment : Fragment() {
                             state.error.message ?: DEFAULT_ERROR_MESSAGE,
                             Toast.LENGTH_LONG
                         ).show()
+
+                        binding.icProgressBar.flProgressCircular.visibility = View.GONE
+                        binding.rvImages.visibility = View.GONE
                     }
                 }
             }
@@ -118,12 +189,12 @@ class ReaderFragment : Fragment() {
 
     companion object {
         fun newInstance(
-            site: MangaSite, chapters: List<MangaChapter>, position: Int
+            site: MangaSite, manga: Manga, position: Int
         ): ReaderFragment {
             return ReaderFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(CLASS_SITE, site as Parcelable)
-                    putParcelableArrayList(LIST_CHAPTERS, ArrayList(chapters))
+                    putParcelable(CLASS_ITEM, manga as Parcelable)
                     putInt(CHAPTER_NUMBER, position)
                 }
             }

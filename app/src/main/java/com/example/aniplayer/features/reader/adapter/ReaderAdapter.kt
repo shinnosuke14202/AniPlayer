@@ -1,10 +1,7 @@
 package com.example.aniplayer.features.reader.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
-import android.widget.ImageView
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -16,7 +13,7 @@ import com.example.aniplayer.R
 import com.example.aniplayer.databinding.ItemImageBinding
 import com.example.aniplayer.model.manga.MangaPage
 
-class ReaderAdapter :
+class ReaderAdapter(private val onItemClick: () -> Unit) :
     PagingDataAdapter<MangaPage, ReaderAdapter.ReaderViewHolder>(diffCallback = object :
         DiffUtil.ItemCallback<MangaPage>() {
         override fun areItemsTheSame(oldItem: MangaPage, newItem: MangaPage): Boolean {
@@ -45,6 +42,9 @@ class ReaderAdapter :
                 placeholder(R.drawable.item_loading)
                 error(R.drawable.item_error)
             }
+            binding.pv.setOnPhotoTapListener(listener = { _, _, _ ->
+                onItemClick()
+            })
         }
     }
 }
