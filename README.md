@@ -1,6 +1,6 @@
-# Mango Study Project
+# Manga Reader
 
-🥭 **AniPlayer** is a personal learning project focused on exploring how to build a manga reader (with plans to add anime support in the future). It is currently under development and not intended for public distribution or commercial use.
+🥭 **Manga Reader** is a personal learning project focused on exploring how to build a manga reader (with plans to add anime support in the future). It is currently under development and not intended for public distribution or commercial use.
 
 ---
 
